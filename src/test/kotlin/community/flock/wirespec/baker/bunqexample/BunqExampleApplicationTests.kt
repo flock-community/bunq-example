@@ -1,16 +1,12 @@
 package community.flock.wirespec.baker.bunqexample
 
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
-import com.bunq.sdk.generated.Sdk
-import com.bunq.sdk.generated.endpoint.READ_User
-import kotlinx.coroutines.runBlocking
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
