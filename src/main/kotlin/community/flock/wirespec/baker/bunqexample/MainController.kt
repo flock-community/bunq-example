@@ -27,17 +27,7 @@ class MainController {
 
     @GetMapping("/main")
     suspend fun main(): String? {
-        val req = READ_User.Request(
-            itemId = context.userId,
-            CacheControl = null,
-            UserAgent = config.serviceName,
-            XBunqLanguage = null,
-            XBunqRegion = null,
-            XBunqClientRequestId = null,
-            XBunqGeolocation = null,
-            XBunqClientAuthentication = config.apiKey
-        )
-        val res = sdk.rEAD_User(req)
+        val res = sdk.rEAD_User(context.userId)
         when (res) {
             is READ_User.Response200 -> return res.body.UserPerson?.public_nick_name
             else -> error("Unexpected response body: ${res.status}")
