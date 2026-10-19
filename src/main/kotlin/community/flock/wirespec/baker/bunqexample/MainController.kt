@@ -31,6 +31,6 @@ class MainController(@Value("\${bunq.api-key}") apiKey: String) {
             is ReadUser.Response400 -> error("bunq answered 400: ${res.body.Error?.firstOrNull()?.error_description}")
         }
     } catch (e: BunqApiException) {
-        error("bunq answered ${e.status}")
+        throw IllegalStateException(e.message, e)
     }
 }
