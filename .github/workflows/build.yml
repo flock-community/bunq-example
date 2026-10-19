@@ -22,6 +22,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+      - name: create sandbox API key
+        run: |
+          key=$(curl -sf -X POST https://public-api.sandbox.bunq.com/v1/sandbox-user-person -H 'Content-Type: application/json' -H 'User-Agent: bunq-example' -d '{}' | jq -r '.Response[0].ApiKey.api_key')
+          echo "::add-mask::$key"
+          echo "BUNQ_API_KEY=$key" >> "$GITHUB_ENV"
       - name: build
         run: |
           ./gradlew build

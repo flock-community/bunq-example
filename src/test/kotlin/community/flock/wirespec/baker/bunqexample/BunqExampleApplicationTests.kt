@@ -16,7 +16,7 @@ class BunqExampleApplicationTests {
     private lateinit var webTestClient: WebTestClient
 
     @Test
-    fun `test main endpoint returns user nickname`(): Unit = runBlocking {
+    fun `test main endpoint returns a user nickname`(): Unit = runBlocking {
 
         // When & Then
         webTestClient.get()
@@ -24,7 +24,7 @@ class BunqExampleApplicationTests {
             .exchange()
             .expectStatus().isOk
             .expectBody<String>()
-            .isEqualTo("Donald")
+            .value { assert(it.isNotBlank()) }
     }
 
 }

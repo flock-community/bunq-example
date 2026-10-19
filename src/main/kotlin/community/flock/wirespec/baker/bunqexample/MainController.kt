@@ -1,37 +1,36 @@
 package community.flock.wirespec.baker.bunqexample
 
+import com.bunq.sdk.BUNQ_SANDBOX_SERVER
+import com.bunq.sdk.BunqApiException
+import com.bunq.sdk.BunqSigningKeysGenerator
 import com.bunq.sdk.Config
-import com.bunq.sdk.Signing
-import com.bunq.sdk.generated.Sdk
-import com.bunq.sdk.generated.endpoint.READ_User
-import com.bunq.sdk.handler
+import com.bunq.sdk.bunqClient
+import com.bunq.sdk.generated.endpoint.ReadUser
 import com.bunq.sdk.initContext
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
-import java.io.File
 
 @RestController
-class MainController {
+class MainController(@Value("\${bunq.api-key}") apiKey: String) {
 
-    private val config = Config(
-        apiKey = "sandbox_83f4f88a10706750ec2fdcbc1ce97b582a986f2846d33dcaaa974d95",
-        serviceName = "PeterScript",
-        publicKeyFile = File("../../public_key.pem"),
-        privateKeyFile = File("../../private_key.pem"),
+    private val context = initContext(
+        Config(
+            bunqServer = BUNQ_SANDBOX_SERVER,
+            serviceName = "PeterScript",
+            apiKey = apiKey,
+            signingKeys = BunqSigningKeysGenerator.generateBunqSigningKeys(),
+        )
     )
-
-    val signing = Signing(config)
-    val context = initContext(config)
-    val sdk = Sdk(handler(signing, context))
-
+    private val client = bunqClient(context)
 
     @GetMapping("/main")
-    suspend fun main(): String? {
-        val res = sdk.rEAD_User(context.userId)
-        when (res) {
-            is READ_User.Response200 -> return res.body.UserPerson?.public_nick_name
-            else -> error("Unexpected response body: ${res.status}")
+    suspend fun main(): String? = try {
+        when (val res = client.readUser(context.userId)) {
+            is ReadUser.Response200 -> res.body.UserPerson?.public_nick_name
+            is ReadUser.Response400 -> error("bunq answered 400: ${res.body.Error?.firstOrNull()?.error_description}")
         }
-
+    } catch (e: BunqApiException) {
+        error("bunq answered ${e.status}")
     }
 }
