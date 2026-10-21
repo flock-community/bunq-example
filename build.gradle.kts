@@ -23,8 +23,7 @@ repositories {
 }
 
 dependencies {
-    // switch to 0.1.0 once the release is tagged
-    implementation("com.github.flock-community.bunq-sdk:kotlin:a3601f75cf")
+    implementation("com.github.flock-community.bunq-sdk:kotlin:0.1.1")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
